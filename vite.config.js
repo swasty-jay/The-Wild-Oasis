@@ -1,10 +1,22 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  optimizeDeps: {
-    include: ["date-fns"]
+  resolve: {
+    alias: {
+      'date-fns': 'date-fns' // Ensure Vite resolves date-fns correctly
+    }
+  },
+  build: {
+    target: 'esnext', // Ensure modern JavaScript target
+    rollupOptions: {
+      external: ['date-fns'] // If needed, handle date-fns as an external dependency
+    }
+  },
+  server: {
+    hmr: {
+      overlay: false // Optionally disable the overlay if it’s too intrusive
+    }
   }
-})
+});

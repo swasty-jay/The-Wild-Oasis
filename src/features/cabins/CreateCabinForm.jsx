@@ -66,8 +66,8 @@ function CreateCabinForm() {
     mutate(data);
   }
 
-  function onError(errors) {
-    console.log(errors);
+  function onError() {
+    // console.log(errors);
   }
   return (
     <Form onSubmit={handleSubmit(onSubmit, onError)}>
@@ -76,6 +76,7 @@ function CreateCabinForm() {
         <Input
           type="text"
           id="name"
+          disabled={isCreating}
           {...register("name", { required: "This field is required" })}
         />
         {errors?.name?.message && <Error>{errors.name.message}</Error>}
@@ -86,6 +87,7 @@ function CreateCabinForm() {
         <Input
           type="number"
           id="maxCapacity"
+          disabled={isCreating}
           {...register("maxCapacity", {
             required: "This field is required",
             min: {
@@ -102,6 +104,7 @@ function CreateCabinForm() {
         <Input
           type="number"
           id="regularPrice"
+          disabled={isCreating}
           {...register("regularPrice", {
             required: "This field is required",
             min: {
@@ -118,15 +121,21 @@ function CreateCabinForm() {
         <Input
           type="number"
           id="discount"
-          defaultValue={0}
+          disabled={isCreating}
+          // defaultValue={0}
           {...register("discount", {
             required: "This field is required",
-            validate: (value) =>
-              value <= getValues().regularPrice ||
-              "discount should be less than regular price",
+            validate: (value) => {
+              const regularPrice = getValues("regularPrice"); // Ensure regularPrice is retrieved
+              return (
+                value <= regularPrice ||
+                "Discount should be less than regular price"
+              );
+            },
           })}
         />
-        {errors?.name?.message && <Error>{errors.name.message}</Error>}
+        {/* Display error message */}
+        {errors?.discount?.message && <Error>{errors.discount.message}</Error>}
       </FormRow>
 
       <FormRow>
@@ -134,6 +143,7 @@ function CreateCabinForm() {
         <Textarea
           type="number"
           id="description"
+          disabled={isCreating}
           defaultValue=""
           {...register("description", { required: "This field is required" })}
         />
